@@ -47,7 +47,7 @@ alembic upgrade head
 uvicorn app.main:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-Open <http://127.0.0.1:8000/>; OpenAPI is at `/docs`. Keep the access log disabled because public-link tokens are path parameters.
+Open <http://127.0.0.1:8000/>; the OpenAPI specification is available at `/openapi.json`. The interactive Swagger UI at `/docs` may be blocked by the application's strict Content Security Policy because its development assets are loaded from an external CDN. Keep the access log disabled because public-link tokens are path parameters.
 
 ## Docker Compose with PostgreSQL
 

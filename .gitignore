@@ -1,0 +1,25 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+# Databases and logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+# Private uploaded files
+storage/*
+!storage/.gitkeep
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store

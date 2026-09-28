@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:16.8-alpine
+    environment:
+      POSTGRES_DB: secureshare
+      POSTGRES_USER: secureshare
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-development-only}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U secureshare -d secureshare"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+  app:
+    build: .
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgresql+psycopg://secureshare:${POSTGRES_PASSWORD:-local-development-only}@db:5432/secureshare
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env}
+      STORAGE_DIR: /app/storage
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    ports:
+      - "8000:8000"
+    volumes:
+      - private_storage:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  postgres_data:
+  private_storage:

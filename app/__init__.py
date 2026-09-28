@@ -1,0 +1,1 @@
+"""SecureShare application package."""

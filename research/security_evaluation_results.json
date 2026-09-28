@@ -1,0 +1,28 @@
+{
+  "execution_date": "2026-09-28",
+  "environment": "Python 3.11, FastAPI TestClient, SQLAlchemy, SQLite temporary database",
+  "authoritative_full_run": {
+    "command": "pytest -q",
+    "passed": 38,
+    "failed": 0,
+    "skipped": 0,
+    "duration_seconds": 2.90
+  },
+  "scope_warning": "Results cover only implemented automated scenarios and are not a security certification.",
+  "scenarios": [
+    {"id": "AUTHZ-UNAUTH", "objective": "protected document access without login", "endpoint": "GET /documents/{id} and /download", "attacker": "unauthenticated", "manipulation": "known document id", "expected": "401", "actual": "401", "control": "session dependency", "passed": true},
+    {"id": "AUTHZ-IDOR-READ", "objective": "read another user's document", "endpoint": "GET /documents/{id} and /download", "attacker": "unrelated authenticated", "manipulation": "owner document id", "expected": "404", "actual": "404", "control": "owner-or-active-share helper", "passed": true},
+    {"id": "AUTHZ-IDOR-DELETE", "objective": "delete another user's document", "endpoint": "DELETE /documents/{id}", "attacker": "unrelated authenticated", "manipulation": "owner document id", "expected": "404", "actual": "404", "control": "owner helper", "passed": true},
+    {"id": "AUTHZ-SHARED-READ", "objective": "use explicit read grant", "endpoint": "GET metadata/download", "attacker": "active shared user", "manipulation": "shared document id", "expected": "200", "actual": "200", "control": "active-share predicate", "passed": true},
+    {"id": "AUTHZ-SHARED-ADMIN", "objective": "escalate read grant", "endpoint": "delete/share/link operations", "attacker": "active shared user", "manipulation": "shared document id and nested ids", "expected": "404", "actual": "404", "control": "owner helper", "passed": true},
+    {"id": "SHARE-REVOKED", "objective": "reuse revoked recipient share", "endpoint": "GET /documents/{id}/download", "attacker": "former shared user", "manipulation": "reuse id", "expected": "404", "actual": "404", "control": "revocation predicate", "passed": true},
+    {"id": "LINK-GUESS", "objective": "guess public capability", "endpoint": "GET /shared/{token}", "attacker": "public", "manipulation": "invented token", "expected": "404", "actual": "404", "control": "HMAC lookup", "passed": true},
+    {"id": "LINK-REVOKED-EXPIRED", "objective": "reuse invalidated capability", "endpoint": "GET /shared/{token}", "attacker": "public", "manipulation": "reuse valid token", "expected": "404", "actual": "404", "control": "revocation and expiration", "passed": true},
+    {"id": "FILE-TRAVERSAL", "objective": "escape storage root", "endpoint": "POST /documents", "attacker": "malicious uploader", "manipulation": "plain/encoded/absolute paths", "expected": "422 and no artifact", "actual": "422 and no artifact", "control": "filename validation/generated key", "passed": true},
+    {"id": "FILE-TYPE-SIZE", "objective": "bypass upload policy", "endpoint": "POST /documents", "attacker": "malicious uploader", "manipulation": "extension/MIME/signature/size mismatch", "expected": "422 or 413 and no artifact", "actual": "422 or 413 and no artifact", "control": "layered validation/bounded read", "passed": true},
+    {"id": "CSRF", "objective": "submit unsafe request without valid token", "endpoint": "POST /auth/register", "attacker": "cross-site requester", "manipulation": "missing/invalid token", "expected": "403", "actual": "403", "control": "signed double-submit middleware", "passed": true},
+    {"id": "RATE-LOGIN", "objective": "repeat authentication attempts", "endpoint": "POST /auth/login", "attacker": "automated", "manipulation": "third request at test limit two", "expected": "429", "actual": "429", "control": "in-memory limiter", "passed": true},
+    {"id": "SESSION-INVALID", "objective": "invent session", "endpoint": "GET /auth/me", "attacker": "unauthenticated", "manipulation": "random cookie", "expected": "401", "actual": "401", "control": "HMAC session lookup", "passed": true}
+  ],
+  "not_executed": ["live PostgreSQL", "Docker Compose", "TLS/reverse proxy", "multi-process rate limiting", "SAST/DAST", "malware scanning", "load/concurrency", "independent penetration test"]
+}

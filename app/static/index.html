@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SecureShare</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+<header><div><h1>SecureShare</h1><p>Explicitly authorized document sharing</p></div><button id="logout" hidden>Log out</button></header>
+<main>
+  <div id="notice" role="status" aria-live="polite"></div>
+  <section id="auth-panel" class="grid two">
+    <form id="register-form" class="card"><h2>Register</h2><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Password<input name="password" type="password" autocomplete="new-password" minlength="12" required></label><label>Confirm password<input name="password_confirmation" type="password" autocomplete="new-password" minlength="12" required></label><small>Use 12+ characters with uppercase, lowercase, and a number.</small><button>Register</button></form>
+    <form id="login-form" class="card"><h2>Log in</h2><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button>Log in</button></form>
+  </section>
+  <section id="workspace" hidden>
+    <div class="account card"><div><h2>Workspace</h2><p id="account"></p></div><button id="refresh" class="secondary">Refresh</button></div>
+    <form id="upload-form" class="card"><h3>Upload a document</h3><label>PDF, DOCX, UTF-8 TXT, or CSV (maximum configured size)<input name="file" type="file" accept=".pdf,.docx,.txt,.csv" required></label><button>Upload</button></form>
+    <section class="card"><h3>Accessible documents</h3><div class="table-wrap"><table><thead><tr><th>Name</th><th>Type / size</th><th>Access</th><th>Actions</th></tr></thead><tbody id="documents"></tbody></table></div></section>
+    <section id="manage" class="card" hidden><div class="section-heading"><h3 id="manage-title">Manage document</h3><button id="close-manage" class="secondary">Close</button></div><div class="grid two"><div><h4>User shares</h4><form id="share-form"><label>Recipient email<input name="email" type="email" required></label><button>Create share</button></form><ul id="shares"></ul></div><div><h4>Public links</h4><form id="link-form"><label>Expires in seconds (optional, min 60)<input name="expires" type="number" min="60" max="2592000"></label><button>Create link</button></form><p id="new-link" class="token-output"></p><ul id="links"></ul></div></div></section>
+  </section>
+</main>
+<footer><p>This research application evaluates defined controls; it is not a claim of universal security.</p></footer>
+</body>
+</html>
